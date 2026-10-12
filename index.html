@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>
+    Akıllı İlaç Asistanı
+  </title>
+
+  <link
+    rel="stylesheet"
+    href="style.css"
+  >
+
+  <script
+    type="module"
+    src="firebase.js"
+  ></script>
+
+</head>
+
+<body>
+
+  <!-- SPLASH -->
+
+  <div id="splash">
+
+    <div class="splash-content">
+
+      <img
+        src="logo.png"
+        class="splash-logo"
+        alt="logo"
+      >
+
+      <h2>
+        Akıllı İlaç Asistanı
+      </h2>
+
+      <p>
+        Yükleniyor...
+      </p>
+
+    </div>
+
+  </div>
+
+  <!-- CONTAINER -->
+
+  <div class="container">
+
+    <!-- LOGIN -->
+
+    <div id="loginEkrani">
+
+      <div class="login-screen">
+
+        <img
+          src="logo.png"
+          class="big-logo"
+          alt="logo"
+        >
+
+        <h1>
+          Akıllı İlaç Asistanı
+        </h1>
+
+        <p>
+          İlaçlarınızı güvenle takip edin
+        </p>
+
+        <div class="login-card">
+
+          <input
+            type="text"
+            id="kullaniciAdi"
+            placeholder="Kullanıcı Adı"
+          >
+
+          <input
+            type="password"
+            id="sifre"
+            placeholder="Şifre"
+          >
+
+          <button onclick="girisYap()">
+            Giriş Yap
+          </button>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- APP -->
+
+    <div
+      id="uygulama"
+      style="display:none;"
+    >
+
+      <!-- HEADER -->
+
+      <div class="header">
+
+        <div class="logo">
+
+          <img
+            src="logo.png"
+            alt="logo"
+          >
+
+        </div>
+
+        <div class="header-text">
+
+          <h1>
+            Akıllı İlaç
+          </h1>
+
+          <p>
+            Sağlık Asistanınız
+          </p>
+
+        </div>
+
+      </div>
+
+      <!-- ANA SAYFA -->
+
+      <div id="anaSayfa">
+
+        <!-- YAKLASAN ALARM -->
+
+        <div
+          id="yaklasanAlarmKart"
+          class="yaklasan-alarm"
+          style="display:none;"
+        >
+
+          <h3>
+            🔔 Yaklaşan Alarm
+          </h3>
+
+          <p id="yaklasanAlarmText"></p>
+
+        </div>
+
+        <!-- SEARCH -->
+
+        
+
+        <!-- SEARCH POPUP -->
+
+        <div
+          id="aramaPopup"
+          class="arama-popup"
+          style="display:none;"
+        >
+
+          <div class="arama-icerik">
+
+            <input
+              type="text"
+              id="manuelIlacInput"
+              placeholder="İlaç adı giriniz..."
+            >
+
+            <button onclick="manuelIlacAra()">
+              Ara
+            </button>
+
+          </div>
+
+        </div>
+
+        <!-- QR -->
+
+        <div class="glass">
+
+          <h2>
+            📷 QR Kod Tara
+          </h2>
+
+          <p class="qr-text">
+            İlacın karekodunu kameraya okutun
+          </p>
+
+          <div id="reader"></div>
+
+        </div>
+
+      </div>
+
+      <!-- ILAC DETAY -->
+
+      <div
+        id="ilacDetaySayfasi"
+        style="display:none;"
+      >
+
+        <div id="sonuc"></div>
+
+        <button
+          class="yeniden-btn"
+          onclick="yenidenQR()"
+        >
+          📷 Yeni İlaç Oku
+        </button>
+
+      </div>
+
+      <!-- ALARM SAYFASI -->
+
+      <div
+        id="alarmSayfasi"
+        style="display:none;"
+      >
+
+        <div class="kart">
+
+          <h2>
+            ⏰ Aktif Alarmlar
+          </h2>
+
+          <div id="alarmListesi"></div>
+
+        </div>
+
+      </div>
+
+      <!-- PROFIL -->
+
+      <div
+        id="profilSayfasi"
+        style="display:none;"
+      >
+
+        <div class="kart profil-kart">
+
+          <!-- AYAR BUTONU -->
+
+          <div
+            class="ayar-btn"
+            onclick="ayarMenuAcKapat()"
+          >
+            ☰
+          </div>
+
+          <!-- AYAR MENU -->
+
+          <div
+            id="ayarMenu"
+            class="ayar-menu"
+            style="display:none;"
+          >
+
+            <button onclick="darkModeAcKapat()">
+              🌙 Koyu Mod
+            </button>
+
+            <button onclick="yasliModuAcKapat()">
+              👴 Yaşlı Modu
+            </button>
+
+            <button onclick="cikisYap()">
+              🚪 Çıkış Yap
+            </button>
+
+          </div>
+
+          <!-- PROFIL -->
+
+          <div id="profilIsim"></div>
+
+        </div>
+
+      </div>
+
+      <!-- ALT MENU -->
+
+      <div class="alt-menu">
+
+  <div
+    class="menu-item aktif-menu"
+    onclick="
+      sayfaGoster('ana');
+      aktifMenuDegistir(this)
+    "
+  >
+    <span>🏠</span>
+    Ana Sayfa
+  </div>
+
+  <div
+    class="menu-item"
+    onclick="aramaKutusuAc()"
+  >
+    <span>🔍</span>
+    Ara
+  </div>
+
+  <div
+    class="menu-item"
+    onclick="
+      sayfaGoster('alarm');
+      aktifMenuDegistir(this)
+    "
+  >
+    <span>⏰</span>
+    Alarmlar
+  </div>
+
+  <div
+    class="menu-item"
+    onclick="
+      sayfaGoster('profil');
+      aktifMenuDegistir(this)
+    "
+  >
+    <span>👤</span>
+    Profil
+  </div>
+
+</div>
+
+             <!-- ALT MENU -->
+
+      <div class="alt-menu">
+
+        <div
+          class="menu-item aktif-menu"
+          onclick="
+            sayfaGoster('ana');
+            aktifMenuDegistir(this)
+          "
+        >
+          <span>🏠</span>
+          Ana Sayfa
+        </div>
+
+        <div
+          class="menu-item"
+          onclick="aramaKutusuAc()"
+        >
+          <span>🔍</span>
+          Ara
+        </div>
+
+        <div
+          class="menu-item"
+          onclick="
+            sayfaGoster('alarm');
+            aktifMenuDegistir(this)
+          "
+        >
+          <span>⏰</span>
+          Alarmlar
+        </div>
+
+        <div
+          class="menu-item"
+          onclick="
+            sayfaGoster('profil');
+            aktifMenuDegistir(this)
+          "
+        >
+          <span>👤</span>
+          Profil
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <script src="https://unpkg.com/html5-qrcode"></script>
+
+  <script src="script.js"></script>
+
+</body>
+
+</html>
+
+ 
